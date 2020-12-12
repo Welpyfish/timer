@@ -1,139 +1,137 @@
-var g_isStarted=false;
-var dtStart=null;
-var dtStop=null;
-var hTimer=null;
-var counter=1;
-var records=[];
-var besttime=0.0;
-var worsttime=0.0;
-var meantime=0.0;
-var phase = 0;
-// test3
+var g_dtStart=null;
+var g_dtStop=null;
+var g_hTimer=null;
+var g_counter=1;
+var g_records=[];
+var g_besttime=0.0;
+var g_meantime=0.0;
+var g_phase = 0;
+
 $(document).ready(function(){
 
-	$("#divBesttime").text(besttime.toString());
-	
-	// check cookie
+	init();
+
+    document.addEventListener('keydown', function(keyboardEventObject) {
+		onKeydown(keyboardEventObject);
+    });
+  
+	document.addEventListener('keyup', function(keyboardEventObject) {
+		onKeyup(keyboardEventObject);
+	});
+
+	$("#btnScramble").click(function() {
+		var scramble = makeScramble();
+		$( "#divButton" ).text(scramble);
+	});
+
+	$("#btnClearall").click(function() {
+		resetCookie();
+		updateRecords(g_records);
+	}); 
+
+	$("#btnClearworst").click(function() {
+		var idx = findWorsttimeindex();
+		g_records.splice(idx,1);
+		updateRecords(g_records);
+	})
+})
+
+// load info from cookie and init the settings
+function init() {
+
+	// load records
     var cuberecords = getCookie("cuberecords");
     if (cuberecords != "") {
-        records = JSON.parse(cuberecords);
-	    updateRecords(records); 
+        g_records = JSON.parse(cuberecords);
+	    updateRecords(g_records); 
 	}
 
-	updateMean(records);
+	// update mean
+	updateMean(g_records);
 
+	// load best time
 	var best = getCookie("besttime");
 	if (best != "") {
-		besttime = JSON.parse(best);
-		$("#divBesttime").text(besttime)
-	}	
-    document.addEventListener('keydown', function(keyboardEventObject) {
-		//console.log("keydown ....");
-		var KeyID = keyboardEventObject.keyCode;
-		if (KeyID == 32) {
-			if (g_isStarted == false) {
-				$("#divTimer").text("0.00");
-				$("#divTimer").css("color", "green");
-				hTimer=null;
-				phase = 1;
-			} else {
-				if (phase == 2) {
+		g_besttime = JSON.parse(best);
+		$("#divBesttime").text(g_besttime)
+	}
+}
+
+function onKeydown(event) {
+	//console.log("keydown ....");
+	var KeyID = event.keyCode;
+	if (KeyID == 32) {
+		if (g_phase == 0) {
+			$("#divTimer").text("0.00");
+			$("#divTimer").css("color", "green");
+			g_hTimer=null;
+			g_phase = 1;
+		} else {
+			if (g_phase == 2) {
 				console.log("keydown ....");
-				dtStop = new Date();
-				var diff = ((dtStop - dtStart)/1000).toFixed(2);
+				g_dtStop = new Date();
+				var diff = ((g_dtStop - g_dtStart)/1000).toFixed(2);
 				// add to record list
-				records.push(diff);
+				g_records.push(diff);
 
 				var diffText = diff.toString();
 				
-				var msg = "<div>"+counter.toString() + ". " + diffText + "s</div>";
-				counter = counter + 1;
+				var msg = "<div>"+g_counter.toString() + ". " + diffText + "s</div>";
+				g_counter = g_counter + 1;
 
 				$("#divDiffTime").prepend(msg);
 
 				$("#divTimer").text(diff);
 
-				// if (diff < 10){
-					// alert("sub 10!");
-				// }
-								
-                if (besttime == 0) {
-					besttime = diff;
+				if (g_besttime == 0) {
+					g_besttime = diff;
 				} else {
-					if (besttime > diff) {
-						besttime = diff;
+					if (g_besttime > diff) {
+						g_besttime = diff;
 						//alert("new record!")
 					}
 				}
-				$("#divBesttime").text(besttime.toString());
+				$("#divBesttime").text(g_besttime.toString());
 
-				if (hTimer != null) {
-					clearInterval(hTimer);
-					hTimer = null;
+				if (g_hTimer != null) {
+					clearInterval(g_hTimer);
+					g_hTimer = null;
 				}
-                phase = 3;
-			 }
-		   }
-		}
-    });
-  
-	document.addEventListener('keyup', function(keyboardEventObject) {
-		console.log("keyup ....");
-		var KeyID = keyboardEventObject.keyCode;
-		if (KeyID == 32) {
-			if (g_isStarted == false) {
-				$("#divTimer").css("color", "red");
-				dtStart = new Date();
-				hTimer = setInterval(mytimer, 100)
-				g_isStarted = true; 
-				phase = 2;
-			} else {
-				g_isStarted = false; 
-				// save records
-
-				var json = JSON.stringify(records);
-				setCookie("cuberecords", json);
-
-				var bestjson = JSON.stringify(besttime)
-				setCookie("besttime", bestjson)
-
-				updateMean(records);
-				phase = 0;
+				g_phase = 3;
 			}
 		}
-	});
-	document.addEventListener('keypress', function(keyboardEventObject) {
-		//console.log("keypress ....");
-	}); 
+	}
+}
 
-	$("#btnScramble").click(function() {
-		var scramble = makeScramble();
-		//alert( scramble );
-		$( "#divButton" ).text(scramble);
-	});
+function onKeyup(event) {
+	//console.log("keyup ....");
+	var KeyID = event.keyCode;
+	if (KeyID == 32) {
+		if (g_phase == 1) {
+			$("#divTimer").css("color", "red");
+			g_dtStart = new Date();
+			g_hTimer = setInterval(mytimer, 100)
+			g_phase = 2;
+		} else { 
+			// save records
+			var json = JSON.stringify(g_records);
+			setCookie("cuberecords", json);
 
-	$("#divMeantime").text(meantime.toString())
+			var bestjson = JSON.stringify(g_besttime)
+			setCookie("besttime", bestjson)
 
-		
-	$("#btnClearall").click(function() {
-		resetCookie();
-		updateRecords(records);
-	}); 
-
-	$("#btnClearworst").click(function() {
-		var idx = findWorsttimeindex();
-		records.splice(idx,1);
-		updateRecords(records);
-	})
-
-})
+			updateMean(g_records);
+			g_phase = 0;
+		}
+	}
+}
 
 function findWorsttimeindex() {
 	var w=0.0;
 	var idx=-1;
-	for (var i=0; i<records.length; i++) {
-		if (w < parseFloat(records[i])) {
-			w = parseFloat(records[i]);
+	for (var i=0; i<g_records.length; i++) {
+		if (w < parseFloat(g_records[i])) {
+			w = parseFloat(g_records[i]);
 			idx=i;
 		}
 	}
@@ -141,7 +139,7 @@ function findWorsttimeindex() {
 }	
 function mytimer() {
 	var dtCurrent = new Date();
-	var dtCurrent = ((dtCurrent-dtStart)/1000).toFixed(2);
+	var dtCurrent = ((dtCurrent-g_dtStart)/1000).toFixed(2);
 	var diffText = dtCurrent.toString();
 	$("#divTimer").text(diffText)
 }
@@ -156,7 +154,7 @@ function setCookie(cookieName,cookieValue){
 function resetCookie (){
 	setCookie("cuberecords", "[]");
 	setCookie("besttime", "0");
-	records=[];
+	g_records=[];
 }
 
 function getCookie(cookieName){
@@ -172,24 +170,24 @@ function getCookie(cookieName){
 	return "";
 }
 
-// recordlist - array of records in string
+// recordlist - array of g_records in string
 function updateMean(recordlist) {
 	var recordlist = [];
-	records.forEach(function(value) {
+	g_records.forEach(function(value) {
 		recordlist.push(parseFloat(value));
 	});
 
-	meantime = calculateMean(recordlist);
-	$("#divMeantime").text(meantime.toString());
+	g_meantime = calculateMean(recordlist);
+	$("#divMeantime").text(g_meantime.toString());
 
 }
 
 function updateRecords(recordlist) {
 	$("#divDiffTime").html("");
-	counter = 1;
+	g_counter = 1;
 	for (var i = 0; i < recordlist.length; i++) {
-		var msg = "<div>"+counter.toString() + ". " + recordlist[i] + "s</div>";
-		counter = counter + 1;
+		var msg = "<div>"+g_counter.toString() + ". " + recordlist[i] + "s</div>";
+		g_counter = g_counter + 1;
 		$("#divDiffTime").prepend(msg);
 	}
 }
