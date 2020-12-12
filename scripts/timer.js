@@ -8,7 +8,7 @@ var besttime=0.0;
 var worsttime=0.0;
 var meantime=0.0;
 var phase = 0;
-// test2
+// test3
 $(document).ready(function(){
 
 	$("#divBesttime").text(besttime.toString());
