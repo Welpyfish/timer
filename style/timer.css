@@ -102,3 +102,140 @@
 	float: auto;
 	font-size: 50px;
 }
+
+#divContainernew {
+	font-size: 1.5em;
+	padding: 20px;
+	border-width: 3px;
+	border-style: solid;
+	border-color: orange;
+	min-width: 800px;
+	}
+  
+	#divHeadernew {
+	font-size: 1.5em;
+	padding: 20px;
+	border-width: 5px;
+	border-style: solid;
+	border-color: green;
+	margin-bottom: 50px;
+	overflow: visible;
+	height: 60px;
+	}
+  
+	#divBodynew {
+	font-size: 1.5em;
+	padding: 20px;
+	border-width: 3px;
+	border-style: solid;
+	border-color: red;
+	height: 500px;
+	}
+  
+	  #divLogonew {
+	font-size: 1em;
+	padding: 5px;
+	border-width: 3px;
+	border-style: solid;
+	border-color: blue;
+	float: left;
+	margin-right: 5px;
+	width: 15%;
+	}
+  
+		#divScramblenew {
+	font-size: 1em;
+	padding: 5px;
+	border-width: 3px;
+	border-style: solid;
+	border-color: blue;
+	float: left;
+	width: 80%;
+	text-align: center;
+	}
+  
+	  #btnScramblenew {
+	font-size: 0.4em;
+	padding: 4px;
+	border-width: 3px;
+	border-style: solid;
+	border-color: orange;
+	width: 100%;
+	}
+  
+	  #btnClrallnew {
+	font-size: 0.4em;
+	padding: 4px;
+	border-width: 3px;
+	border-style: solid;
+	border-color: orange;
+	width: 48%;
+	}
+	 #btnClrworstnew {
+	font-size: 0.4em;
+	padding: 4px;
+	border-width: 3px;
+	border-style: solid;
+	border-color: orange;
+	width: 48%;
+	}
+  
+	  #divRecordsnew {
+	font-size: 20px;
+	padding: 2px;
+	border-width: 2px;
+	border-style: solid;
+	border-color: red;
+	height: 75%;
+	overflow: auto;
+	}
+  
+	#tableRecordsnew  table {
+	border: 1px solid black;  
+	width: 100%;
+	border-collapse: collapse;
+  	}
+	
+	#tableRecordsnew  td {
+		border: 1px solid #ddd;
+  		padding: 8px;
+	  }
+	#tableRecordsnew tr:nth-child(even){background-color: #f2f2f2;}
+
+	#tableRecordsnew tr:hover {background-color: #ddd;}
+
+	#divBodyleftnew {
+	padding: 5px;
+	border-width: 3px;
+	border-style: solid;
+	border-color: greenyellow;
+	width: 30%;
+	height: 90%;
+	float: left;
+	}
+  
+	  #divBodyrightnew {
+	padding: 15% 0;
+	border-width: 3px;
+	border-style: solid;
+	border-color: royalblue;
+	width: 60%;
+	float: right;
+	text-align: center;
+	margin: auto;
+	}
+  
+	  #divTimernew {
+	font-size: 60px;   
+	padding: 15px; 
+	}
+  
+	  #divBestnew {
+	font-size: 40px;   
+	padding: 2px; 
+	}
+  
+	  #divMeannew {
+	font-size: 40px;   
+	padding: 2px; 
+	}

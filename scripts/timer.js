@@ -7,6 +7,13 @@ var g_besttime=0.0;
 var g_meantime=0.0;
 var g_phase = 0;
 
+var id_div_timer = "divTimernew";
+var id_table_records = "tableRecordsnew";
+var id_div_besttimer = "divBestnew";
+var id_div_bestrecords = "divBesttimenew";
+var id_div_timer = "divTimernew";
+var id_btn_scramble = "btnScramble";
+
 $(document).ready(function(){
 
 	init();
@@ -19,7 +26,7 @@ $(document).ready(function(){
 		onKeyup(keyboardEventObject);
 	});
 
-	$("#btnScramble").click(function() {
+	$("#"+id_btn_scramble).click(function() {
 		var scramble = makeScramble();
 		$( "#divButton" ).text(scramble);
 	});
@@ -53,7 +60,7 @@ function init() {
 	var best = getCookie("besttime");
 	if (best != "") {
 		g_besttime = JSON.parse(best);
-		$("#divBesttime").text(g_besttime)
+		$("#"+id_div_besttimer).text(g_besttime)
 	}
 }
 
@@ -62,8 +69,8 @@ function onKeydown(event) {
 	var KeyID = event.keyCode;
 	if (KeyID == 32) {
 		if (g_phase == 0) {
-			$("#divTimer").text("0.00");
-			$("#divTimer").css("color", "green");
+			$("#"+id_div_timer).text("0.00");
+			$("#"+id_div_timer).css("color", "green");
 			g_hTimer=null;
 			g_phase = 1;
 		} else {
@@ -75,13 +82,16 @@ function onKeydown(event) {
 				g_records.push(diff);
 
 				var diffText = diff.toString();
-				
-				var msg = "<div>"+g_counter.toString() + ". " + diffText + "s</div>";
+				var counter = g_counter.toString();
 				g_counter = g_counter + 1;
 
-				$("#divDiffTime").prepend(msg);
+				if ($("#"+ id_table_records).find("tr").length < 4) {
+					$("#"+ id_table_records).append("<tr><td>"+ counter +"</td><td>"+ diffText +"</td></tr>");
+				} else {
+					$("<tr><td>"+ counter +"</td><td>"+ diffText +"</td></tr>").insertBefore($("#"+ id_table_records +" tr:nth(3)"));
+				}
 
-				$("#divTimer").text(diff);
+				$("#"+id_div_timer).text(diff);
 
 				if (g_besttime == 0) {
 					g_besttime = diff;
@@ -91,7 +101,8 @@ function onKeydown(event) {
 						//alert("new record!")
 					}
 				}
-				$("#divBesttime").text(g_besttime.toString());
+				$("#"+id_div_besttimer).text("Best: "+ g_besttime.toString());
+				$("#"+id_div_bestrecords).text(g_besttime.toString());
 
 				if (g_hTimer != null) {
 					clearInterval(g_hTimer);
@@ -108,7 +119,7 @@ function onKeyup(event) {
 	var KeyID = event.keyCode;
 	if (KeyID == 32) {
 		if (g_phase == 1) {
-			$("#divTimer").css("color", "red");
+			$("#"+id_div_timer).css("color", "red");
 			g_dtStart = new Date();
 			g_hTimer = setInterval(mytimer, 100)
 			g_phase = 2;
@@ -141,7 +152,7 @@ function mytimer() {
 	var dtCurrent = new Date();
 	var dtCurrent = ((dtCurrent-g_dtStart)/1000).toFixed(2);
 	var diffText = dtCurrent.toString();
-	$("#divTimer").text(diffText)
+	$("#"+id_div_timer).text(diffText)
 }
 
 function setCookie(cookieName,cookieValue){
